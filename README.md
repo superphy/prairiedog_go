@@ -2,6 +2,42 @@
 
 # Overview
 
+Public health laboratories are currently moving to whole-genome sequence (WGS) based analyses, and require software methods for the storage and comparison of bacterial species based on WGS data.
+WGS data for different strains and variants of species can be collected to create a reference genome for comparison with new samples.
+These reference "pan-genomes" contain all genes, both core and accessory, and known variants.
+
+Currently, researchers have focused on the development of software to construct pan-genomes.
+While useful for comparison purposes, existing software do not readily update a constructed pan-genome or support variant calling [Computational Pan-Genomics Consortium, 2016] - the identification of a novel variant in a given gene.
+Furthermore, there is a lack of consensus towards indexing pan-genomes for referencing, or storing and restoring a computed pan-genome.
+
+Graph representations of pan-genomes have emerged [Paten et al., 2017] as a possible solution to these challenges.
+In contrast to linear representations, graphs can embed gene annotations and be used as a reference pan-genome.
+The most common forms are a De Bruijn Graph or a Directed Acyclic Graph [Paten et al., 2017].
+Both methods are based off k-mers, the separation of a genome into sequences of length k.
+
+Existing software either require large RAM stores [Marcus, Lee, Schatz, 2014] or are not performant on update tasks [Sheikhizadeh et al., 2016].
+While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced. Our approach borrows ideas and software from network analysis, namely community detection.
+
+prairiedog is a Go application which embeds [Cayley](https://github.com/cayleygraph/cayley) for the graph layer.
+Cayley is a graph database which supports both in-memory and disk-based storage.
+For the pan-genome, we use a novel combined approach integrating a De Bruijn graph (with 11-mer nodes) along with weighted directed edges representing emmission probabilities as in a Li-Stephens model [Li, Stephens, 2003].
+We create a pan-genome by iterating through k-mers generated from each sample of a species, and increase the weight of the edges as they are encountered.
+While exposing prairiedog to sampling bias, this also allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
+Retrieving genes and variants can be performed as in a De Bruijn graph with the added benefit of estimating occurance probabilities based off a given collection of genomes used in construction.
+Our approach also extends to new samples and records meaningful data as more samples are sequenced.
+
+[Computational Pan-Genomics Consortium, 2016]: Computational Pan-Genomics Consortium. (2016). Computational pan-genomics: status, promises and challenges. Briefings in Bioinformatics, bbw089.
+
+[Paten et al., 2017]: Paten, B., Novak, A. M., Eizenga, J. M., & Garrison, E. (2017). Genome graphs and the evolution of genome inference. Genome research, 27(5), 665-676.
+
+[Marcus, Lee, Schatz, 2014]: Marcus, S., Lee, H., & Schatz, M. C. (2014). SplitMEM: a graphical algorithm for pan-genome analysis with suffix skips. Bioinformatics, 30(24), 3476-3483.
+
+[Sheikhizadeh et al., 2016]: Sheikhizadeh, S., Schranz, M. E., Akdel, M., de Ridder, D., & Smit, S. (2016). PanTools: representation, storage and exploration of pan-genomic data. Bioinformatics, 32(17), i487-i493.
+
+[Sirén, Valimaki, Makinen, 2014]: Sirén, J., Välimäki, N., & Mäkinen, V. (2014). Indexing graphs for path queries with applications in genome research. IEEE/ACM Transactions on Computational Biology and Bioinformatics (TCBB), 11(2), 375-388.
+
+[Li, Stephens, 2003]: Li, N., & Stephens, M. (2003). Modeling linkage disequilibrium and identifying recombination hotspots using single-nucleotide polymorphism data. Genetics, 165(4), 2213-2233.
+
 # Technical
 
 * Edge weights
