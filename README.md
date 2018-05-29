@@ -8,7 +8,7 @@ These reference "pan-genomes" contain all genes, both core and accessory, and kn
 
 Currently, researchers have focused on the development of software to construct pan-genomes.
 While useful for comparison purposes, existing software do not readily update a constructed pan-genome or support variant calling [Computational Pan-Genomics Consortium, 2016] - the identification of a novel gene variants when compared against the reference pan-genome.
-Furthermore, there is a lack of consensus towards indexing pan-genomes for referencing, or storing and restoring a computed pan-genome.
+Furthermore, there is a lack of consensus towards indexing pan-genomes for referencing [Sirén, Valimaki, Makinen, 2014], or storing and restoring a computed pan-genome.
 
 Graph representations of pan-genomes have emerged [Paten et al., 2017] as a possible solution to these challenges.
 In contrast to linear representations, graphs can embed gene annotations and be used as a reference pan-genome.
