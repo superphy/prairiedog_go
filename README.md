@@ -16,7 +16,7 @@ The most common forms are a De Bruijn Graph or a Directed Acyclic Graph [Paten e
 Both methods are based off k-mers, the separation of a genome into sequences of length k.
 
 Existing software either require large RAM stores [Marcus, Lee, Schatz, 2014] or are not performant on update tasks [Sheikhizadeh et al., 2016].
-While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which scales to both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced.
+While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software application for creating and updating pan-genomes which scales to both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced.
 Our approach borrows ideas and software from network analysis, namely the core genome is identified using a modified PageRank algorithm [Whang, Gleich, Dhillon, 2013] from community detection research.
 
 # Implementation
@@ -32,8 +32,8 @@ Our approach also extends to new samples and is more accurate as additional samp
 # Conclusion
 
 Completion of this project will allow users, such as reference laboratories, to characterize any bacterial species by creating a reference pan-genome which can be updated as new samples are sequenced.
-A novel result will be the retrieval of haplotypes and variants with probability estimations, based off the sample population.
-Our design focuses on integrating novel information into the pan-genome with every additional sample sequenced, as reference laboratories move to WGS based analyses.
+A novel result will be the retrieval of haplotypes and variants with probability estimations, as based off the sampled population.
+Our design focuses on integrating novel information into the pan-genome with every additional sample sequenced.
 
 # References
 
