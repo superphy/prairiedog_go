@@ -87,6 +87,7 @@ index = {
 
 # Open Questions
 
+* Most pan-genome graph algorithmns have focused on custom data structures (in the code) + compression - unsure how much of a concern this is if we can offload the data structures to established systems
 * SNPs
 * Forward/reverse strands
 * Expansion / reference allele bias?
