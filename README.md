@@ -16,7 +16,7 @@ The most common forms are a De Bruijn Graph or a Directed Acyclic Graph [Paten e
 Both methods are based off k-mers, the separation of a genome into sequences of length k.
 
 Existing software either require large RAM stores [Marcus, Lee, Schatz, 2014] or are not performant on update tasks [Sheikhizadeh et al., 2016].
-While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced. Our approach borrows ideas and software from network analysis, namely community detection.
+While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced. Our approach borrows ideas and software from network analysis, namely the core genome is identified using a modified PageRank algorithmn from community detection research.
 
 prairiedog is a Go application which embeds [Cayley](https://github.com/cayleygraph/cayley) for the graph layer.
 Cayley is a graph database which supports both in-memory and disk-based storage.
