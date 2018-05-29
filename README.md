@@ -2,7 +2,7 @@
 
 # Overview
 
-Public health laboratories are currently moving to whole-genome sequence (WGS) based analyses, and require software methods for the storage and comparison of bacterial species based on WGS data.
+Public health laboratories are currently moving to whole-genome sequence (WGS) based analyses, and require software methods for the characterizing bacterial species based on WGS data.
 WGS data for different strains and variants of species can be collected to create a reference genome for comparison with new samples.
 These reference "pan-genomes" contain all genes, both core and accessory, and known variants.
 
@@ -16,12 +16,12 @@ The most common forms are a De Bruijn Graph or a Directed Acyclic Graph [Paten e
 Both methods are based off k-mers, the separation of a genome into sequences of length k.
 
 Existing software either require large RAM stores [Marcus, Lee, Schatz, 2014] or are not performant on update tasks [Sheikhizadeh et al., 2016].
-While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced. Our approach borrows ideas and software from network analysis, namely the core genome is identified using a modified PageRank algorithmn from community detection research.
+While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced. Our approach borrows ideas and software from network analysis, namely the core genome is identified using a modified PageRank algorithmn [Whang, Gleich, Dhillon, 2013] from community detection research.
 
 prairiedog is a Go application which embeds [Cayley](https://github.com/cayleygraph/cayley) for the graph layer.
-Cayley is a graph database which supports both in-memory and disk-based storage.
-For the pan-genome, we use a novel combined approach integrating a De Bruijn graph (with 11-mer nodes) along with weighted directed edges representing emmission probabilities as in a Li-Stephens model [Li, Stephens, 2003].
-We create a pan-genome by iterating through k-mers generated from each sample of a species, and increase the weight of the edges as they are encountered.
+Cayley is a graph database which supports both in-memory and disk-based storage, and enables us to store and restore the pan-genome.
+For the datastructure, we use a novel combined approach integrating a De Bruijn graph (with 11-mer nodes) along with weighted directed edges representing emmission probabilities as in a Li-Stephens model [Li, Stephens, 2003].
+We create a pan-genome by applying the PageRank algorithmn through k-mers generated from each sample of a species using a random-walk with restart approach [Pan et al., 2004], and also increase the weight of the edges as they are encountered.
 While exposing prairiedog to sampling bias, this also allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
 Retrieving genes and variants can be performed as in a De Bruijn graph with the added benefit of estimating occurance probabilities based off a given collection of genomes used in construction.
 Our approach also extends to new samples and records meaningful data as more samples are sequenced.
@@ -36,7 +36,11 @@ Our approach also extends to new samples and records meaningful data as more sam
 
 [Sirén, Valimaki, Makinen, 2014]: Sirén, J., Välimäki, N., & Mäkinen, V. (2014). Indexing graphs for path queries with applications in genome research. IEEE/ACM Transactions on Computational Biology and Bioinformatics (TCBB), 11(2), 375-388.
 
+[Whang, Gleich, Dhillon, 2013]: Whang, J. J., Gleich, D. F., & Dhillon, I. S. (2013, October). Overlapping community detection using seed set expansion. In Proceedings of the 22nd ACM international conference on Conference on information & knowledge management (pp. 2099-2108). ACM.
+
 [Li, Stephens, 2003]: Li, N., & Stephens, M. (2003). Modeling linkage disequilibrium and identifying recombination hotspots using single-nucleotide polymorphism data. Genetics, 165(4), 2213-2233.
+
+[Pan et al., 2004]: Pan, J. Y., Yang, H. J., Faloutsos, C., & Duygulu, P. (2004, August). Automatic multimedia cross-modal correlation discovery. In Proceedings of the tenth ACM SIGKDD international conference on Knowledge discovery and data mining (pp. 653-658). ACM.
 
 # Technical
 
