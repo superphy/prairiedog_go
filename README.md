@@ -1,6 +1,6 @@
 # prairiedog
 
-# Overview
+# Introduction
 
 Public health laboratories are currently moving to whole-genome sequence (WGS) based analyses, and require software methods for the characterizing bacterial species based on WGS data.
 WGS data for different strains and variants of species can be collected to create a reference genome for comparison with new samples.
