@@ -16,23 +16,23 @@ The most common forms are a De Bruijn Graph or a Directed Acyclic Graph [Paten e
 Both methods are based off k-mers, the separation of a genome into sequences of length k.
 
 Existing software either require large RAM stores [Marcus, Lee, Schatz, 2014] or are not performant on update tasks [Sheikhizadeh et al., 2016].
-While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced. Our approach borrows ideas and software from network analysis, namely the core genome is identified using a modified PageRank algorithmn [Whang, Gleich, Dhillon, 2013] from community detection research.
+While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced. Our approach borrows ideas and software from network analysis, namely the core genome is identified using a modified PageRank algorithm [Whang, Gleich, Dhillon, 2013] from community detection research.
 
 # Implementation
 
 prairiedog is a Go application which embeds [Cayley](https://github.com/cayleygraph/cayley) for the graph layer.
 Cayley is a graph database which supports both in-memory and disk-based storage, and enables us to store and restore the pan-genome.
-For the datastructure, we use a novel combined approach integrating a De Bruijn graph (with 11-mer nodes) along with weighted directed edges representing emmission probabilities as in a Li-Stephens model [Li, Stephens, 2003].
-We create a pan-genome by applying the PageRank algorithmn through k-mers generated from each sample of a species using a random-walk with restart approach [Pan et al., 2004], and also increase the weight of the edges as they are encountered.
+For the data structure, we use a novel combined approach integrating a De Bruijn graph (with 11-mer nodes) along with weighted directed edges representing emission probabilities as in a Li-Stephens model [Li, Stephens, 2003].
+We create a pan-genome by applying the PageRank algorithm through k-mers generated from each sample of a species using a random-walk with restart approach [Pan et al., 2004], and also increase the weight of the edges as they are encountered.
 While exposing prairiedog to sampling bias, this also allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
-Retrieving genes and variants can be performed as in a De Bruijn graph with the added benefit of estimating occurance probabilities based off a given collection of genomes used in construction.
+Retrieving genes and variants can be performed as in a De Bruijn graph with the added benefit of estimating occurrence probabilities based off a given collection of genomes used in construction.
 Our approach also extends to new samples and records meaningful data as more samples are sequenced.
 
 # Conclusion
 
 Completion of this project will allow users, such as reference laboratories, to characterize any bacterial species by creating a reference pan-genome which can be updated as new samples are sequenced.
 A novel result will be the retrieval of haplotypes and variants with probability estimations, based off the sampled population.
-Our design focuses on integrating novel information into the pan-genome with every additional sample sequenced, as reference laboratories move to WGS based anaylses.
+Our design focuses on integrating novel information into the pan-genome with every additional sample sequenced, as reference laboratories move to WGS based analyses.
 
 # References
 
