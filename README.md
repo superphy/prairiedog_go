@@ -16,17 +16,41 @@ The most common forms are a De Bruijn Graph or a Directed Acyclic Graph [Paten e
 Both methods are based off k-mers, the separation of a genome into sequences of length k.
 
 Existing software either require large RAM stores [Marcus, Lee, Schatz, 2014] or are not performant on update tasks [Sheikhizadeh et al., 2016].
-While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced. Our approach borrows ideas and software from network analysis, namely the core genome is identified using a modified PageRank algorithm [Whang, Gleich, Dhillon, 2013] from community detection research.
+While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced.
+Our approach offloads data storage to a generic graph store, and focuses on uncompressed nodes with the goal on minimizing edges.
 
 # Implementation
 
-prairiedog is a Go application which embeds [Cayley](https://github.com/cayleygraph/cayley) for the graph layer.
-Cayley is a graph database which supports both in-memory and disk-based storage, and enables us to store and restore the pan-genome.
+prairiedog is a Go application which uses [Dgraph](https://github.com/dgraph-io/dgraph) for the graph layer and [Badger](https://github.com/dgraph-io/badger) for the k-mer: count mapping.
+We chose Dgraph as a hedge for eventual sharding requirements depending on the size of the sampled population.
 For the data structure, we use a novel combined approach integrating a De Bruijn graph (with 11-mer nodes) along with weighted directed edges representing emission probabilities as in a Li-Stephens model [Li, Stephens, 2003].
-We create a pan-genome by applying the PageRank algorithm through k-mers generated from each sample of a species using a random-walk with restart approach [Pan et al., 2004], and also increase the weight of the edges as they are encountered.
-While exposing prairiedog to sampling bias, this also allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
+The core construction method is as follows:
+
+```python
+for kmer, nextkmer in seed/new genome:
+  if kmer in graph:
+    node_count+=1
+    color
+  else:
+    create_node()
+
+  if nextkmer not in graph:
+    create_node()
+    color
+
+  if edge(kmer, nextkmer):
+    edge_weight +=1
+  else:
+    create_edge()
+```
+
+While edge weights have sampling bias, this allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
 Retrieving genes and variants can be performed as in a De Bruijn graph with the added benefit of estimating occurrence probabilities based off a given collection of genomes used in construction.
 Our approach also extends to new samples and records meaningful data as more samples are sequenced.
+
+It is possible we may implement a compression approach, splitting overlapping segments of an 11-mer into separate edges.
+This would reduce the number of nodes, and possibly edges, but would come at the cost of indexing complete 11-mers with their paths and traversing every split node when we add new genomes.
+We would have to gauge the size reduction to performance tradeoff.
 
 # Conclusion
 
@@ -84,6 +108,10 @@ index = {
 * https://github.com/deepgraph/deepgraph: Python, based off Pandas (likely only in-memory), looks like only an analysis medium & not suitable for live graph construction
 * https://github.com/bitnine-oss/agensgraph: C, runs as a server, ontop of PostgreSQL, SQL or Cypher queries
 * https://github.com/dgraph-io/dgraph: Go, probably overkill
+
+# Directions
+
+* PageRank (a modified approach [Whang, Gleich, Dhillon, 2013]) might come in handy for some operations (i.e. with de bruijn graph pulling out SNPs is not easy unless paths are bounded, so haplotypes might provide those bounds)
 
 # Open Questions
 
