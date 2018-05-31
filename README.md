@@ -1,6 +1,6 @@
 # prairiedog
 
-![prairiedog mascot](images/daisy.jpg)
+![prairiedog mascot](images/daisy.png)
 
 # Introduction
 
