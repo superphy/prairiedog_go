@@ -1,5 +1,7 @@
 # prairiedog
 
+![prairiedog mascot](images/daisy.jpg)
+
 # Introduction
 
 Public health laboratories are currently moving to whole-genome sequence (WGS) based analyses, and require software methods for characterizing bacterial species based on WGS data.
@@ -16,20 +18,14 @@ The most common forms are a De Bruijn Graph or a Directed Acyclic Graph [Paten e
 Both methods are based off k-mers, the separation of a genome into sequences of length k.
 
 Existing software either require large RAM stores [Marcus, Lee, Schatz, 2014] or are not performant on update tasks [Sheikhizadeh et al., 2016].
-<<<<<<< HEAD
 While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software approach to creating and updating pan-genomes which perform on both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced.
 Our approach offloads data storage to a generic graph store, and focuses on uncompressed nodes with the goal on minimizing edges.
-=======
-While a consensus on indexing methods is unlikely [Sirén, Valimaki, Makinen, 2014], we aim to develop a software application for creating and updating pan-genomes which scales to both low and high RAM systems, and focuses on supporting the update of a pan-genome as new samples are sequenced.
-Our approach borrows ideas and software from network analysis, namely the core genome is identified using a modified PageRank algorithm [Whang, Gleich, Dhillon, 2013] from community detection research.
->>>>>>> 767731b096a93f108e16ccc059d0d881d77354a0
 
 # Implementation
 
 prairiedog is a Go application which uses [Dgraph](https://github.com/dgraph-io/dgraph) for the graph layer and [Badger](https://github.com/dgraph-io/badger) for the k-mer: count mapping.
 We chose Dgraph as a hedge for eventual sharding requirements depending on the size of the sampled population.
 For the data structure, we use a novel combined approach integrating a De Bruijn graph (with 11-mer nodes) along with weighted directed edges representing emission probabilities as in a Li-Stephens model [Li, Stephens, 2003].
-<<<<<<< HEAD
 The core construction method is as follows:
 
 ```python
@@ -52,13 +48,7 @@ for kmer, nextkmer in seed/new genome:
 
 While edge weights have sampling bias, this allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
 Retrieving genes and variants can be performed as in a De Bruijn graph with the added benefit of estimating occurrence probabilities based off a given collection of genomes used in construction.
-Our approach also extends to new samples and records meaningful data as more samples are sequenced.
-=======
-We create a pan-genome by applying the PageRank algorithm through k-mers generated from each sample of a species using a *random-walk with restart* approach [Pan et al., 2004], and also increase the weight of the edges as they are encountered.
-While exposing prairiedog to sampling bias, weighted edges allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
-Retrieving genes and variants can be performed as in a De Bruijn graph with the added benefit of estimating occurrence probabilities, as based off the genomes used in construction.
 Our approach also extends to new samples and is more accurate as additional samples are sequenced.
->>>>>>> 767731b096a93f108e16ccc059d0d881d77354a0
 
 It is possible we may implement a compression approach, splitting overlapping segments of an 11-mer into separate edges.
 This would reduce the number of nodes, and possibly edges, but would come at the cost of indexing complete 11-mers with their paths and traversing every split node when we add new genomes.
