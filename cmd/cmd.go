@@ -40,7 +40,17 @@ var globalFlags = []cli.Flag{
 	cli.StringFlag{
 		Name:  "log",
 		Usage: "/var/log/prairiedog.log",
-		Value: "",
+		Value: "/var/log/prairiedog.log",
+	},
+	cli.StringFlag{
+		Name:  "port",
+		Usage: "port for backing database",
+		Value: "8000",
+	},
+	cli.StringFlag{
+		Name:  "address",
+		Usage: "localhost",
+		Value: "localhost",
 	},
 }
 
@@ -76,7 +86,15 @@ func New() *Cmd {
 		if v := c.String("i"); v != "" {
 			options = append(options, graph.InputFiles(v))
 		}
-		options = append(options, graph.LogFile)
+		if v := c.String("address"); v != "" {
+			options = append(options, graph.Address(s))
+		}
+		if v := c.String("port"); v != "" {
+			options = append(options, graph.Port(s))
+		}
+		if v := c.String("logfile"); v != "" {
+			options = append(options, graph.LogFile(s))
+		}
 
 		g, err := graph.New(
 			options...,

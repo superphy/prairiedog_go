@@ -15,6 +15,18 @@ func InputFiles(s string) OptionFn {
 	}
 }
 
+func Address(s string) OptionFn {
+	return func(g *Graph) {
+		g.Address = s
+	}
+}
+
+func Port(s string) OptionFn {
+	return func(g *Graph) {
+		g.port = s
+	}
+}
+
 func LogFile(s string) OptionFn {
 	return func(srvr *Graph) {
 		f, err := os.OpenFile(s, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
