@@ -2,6 +2,15 @@ language: go
 
 go:
   - 1.10.x
+
+services:
+  - docker
+
+before_install:
+  - docker-compose up -d
+
+script:
+  - go test -v ./...
   
 notifications:
   email: false
