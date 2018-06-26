@@ -1,8 +1,13 @@
 package graph
 
 import (
+	"context"
 	"log"
 	"os"
+
+	"github.com/dgraph-io/dgo"
+	"github.com/dgraph-io/dgo/protos/api"
+	"google.golang.org/grpc"
 )
 
 // OptionFn are for handling command-line arguments.
@@ -17,7 +22,7 @@ func InputFiles(s string) OptionFn {
 
 func Address(s string) OptionFn {
 	return func(g *Graph) {
-		g.Address = s
+		g.address = s
 	}
 }
 
@@ -38,9 +43,43 @@ func LogFile(s string) OptionFn {
 	}
 }
 
+func newClient() *dgo.Dgraph {
+	// Dial a gRPC connection. The address to dial to can be configured when
+	// setting up the dgraph cluster.
+	d, err := grpc.Dial("localhost:9080", grpc.WithInsecure())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return dgo.NewDgraphClient(
+		api.NewDgraphClient(d),
+	)
+}
+
+func setup(c *dgo.Dgraph) {
+	// Install a schema into dgraph. Accounts have a `name` and a `balance`.
+	err := c.Alter(context.Background(), &api.Operation{
+		Schema: `
+			sequence: string @index(term) .
+			count: int .
+		`,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+type Kmer struct {
+	mer   [21]byte
+	count int
+}
+
 // Graph is the main struct.
 type Graph struct {
-	inputs string
+	inputs  string
+	port    string
+	address string
+	client  *dgo.Dgraph
 }
 
 // New creates a new graph.
@@ -50,6 +89,8 @@ func New(options ...OptionFn) (*Graph, error) {
 	for _, optionFn := range options {
 		optionFn(g)
 	}
+	g.client = newClient()
+	setup(g.client)
 
 	return g, nil
 }
