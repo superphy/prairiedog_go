@@ -78,7 +78,7 @@ func ExampleKmersIndexEnd() {
 	// TACGGATTCTT
 }
 
-// ExampleKmersIndexDiff checks Last of a contig before switching.
+// ExampleKmersIndexDiff checks last of a contig before switching.
 func ExampleKmersIndexDiff() {
 	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
 	var header, kmer string
