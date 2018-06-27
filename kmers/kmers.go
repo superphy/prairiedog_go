@@ -31,7 +31,7 @@ func (km *Kmers) load() {
 
 	seq := make([]byte, 0)
 	for scanner.Scan() {
-		s := scanner.Text()
+		s := strings.TrimSpace(scanner.Text())
 		if strings.HasPrefix(s, ">") {
 			if len(seq) != 0 {
 				km.Sequences = append(km.Sequences, string(seq))
@@ -58,7 +58,7 @@ func New(s string) *Kmers {
 
 func (km *Kmers) Next() (string, string) {
 	lastOfSequences := km.li == len(km.Sequences)-1
-	endOfSeq := km.pi > len(km.Sequences[km.li])-1+km.K
+	endOfSeq := km.pi+km.K > len(km.Sequences[km.li])
 
 	// Done.
 	if lastOfSequences && endOfSeq {
@@ -81,6 +81,7 @@ func (km *Kmers) Next() (string, string) {
 	// Fasta header.
 	header := km.Headers[km.li]
 	// Slice of the sequence.
+	// log.Printf("%v, %v, %v, %v", km.li, km.pi, lastOfSequences, endOfSeq)
 	sl := km.Sequences[km.li][km.pi : km.pi+km.K]
 
 	// Increment.

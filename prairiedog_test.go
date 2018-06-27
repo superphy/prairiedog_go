@@ -2,6 +2,7 @@ package prairiedog
 
 import (
 	"fmt"
+	"log"
 	"testing"
 
 	"github.com/superphy/prairiedog/kmers"
@@ -42,7 +43,11 @@ func ExampleKmersIndex() {
 	fmt.Println(km.Headers[1])
 	fmt.Println(km.Sequences[0])
 	fmt.Println(km.Sequences[1])
-	fmt.Println(len(km.Sequences[0]))
+	n := len(km.Sequences[0])
+	fmt.Println(n)
+	fmt.Println(string(km.Sequences[0][n-1]))
+	fmt.Println(string(km.Sequences[0][n-2]))
+	fmt.Println(string(km.Sequences[0][n-3]))
 	// Output:
 	// 297
 	// 297
@@ -51,18 +56,41 @@ func ExampleKmersIndex() {
 	// >lcl|ECI-2866|NODE_222_length_438_cov_0.710611_ID_443
 	// AACGCGCACTGACGTGAGGCCAGCGTACAGGCCGGATTATCGACATATTTCTGACAGGTGCCGTTATCTGCGGACTGTGTGACATATTTATCCCGGTATGCCCAGCACGCCTGTGTGATGCTCCAGGGTTTACCTTCCATCACACCTGTTTTCGTCCCCCCCGGCTCTGAACACTCAGTACCTTTCAGCACGCCATCCGCTTTATTAAACGGACAACTCTCCACCCACTCCACCCGTGGAACCCATTCCTTATCACGGACCTTCATCCTGAGTTTCAGCGTAAAGGTGGAAGCACCACTGACAAGCGATTCATAGACCATCCTGTCACCATTCCCGTGCGGGAGGCAATTACCGTTTGCAGTACAGCCACTACCGATCAGAACCTGCCCCTGTGTGACAGAAAACCCGGAGGGCACAGGTATGGTGAAAGTCCCGCTCTGTCCTGTAACCAGTTGCACATTAAAGGCTGTGTTCATAAAGTCGTAACGGGAGTTAAGGAAATATAGCCCTGCATGAGCCGACAGCGAGGCAC
 	// ACATCGTGCCGCATTGTTGGCAGAGGGAATTCCTTTTCATTGCTTTTATTATCCCTGTGTTAGTGAAATACTACGTTAGGGTTTGGAACACGTAAGAAAAATGGCGTTGTCAATGGGATTGTTTTTTTTTTATGCCGGTCAGATCTCAAAAACTAGGCCAGAGATCAATTCTACTTGACCTCATGACAGTTTACTGCCGCTGCTGCCGGAATCCAAATCTCGTGGTATCCTAACTCAAGGAGTCGGCATGAAGTCCATCGAAGCATATTTTCTGTTCATCAGGTATTGACTAGTGACTCTGCAAGGACAAATCACCTTACTACATCCTGGTCCATGGTGAAGTCTAGCTTTGATACCTTGAGTTGTCCATTCCCGGAAATGCACCTCCGGGCCAGGGGTGCTCGCTCTGACCTTCGTGTCCCATGGAACTTCAGCCAG
-	// 540
+	// 532
+	// C
+	// A
+	// C
 }
 
 // ExampleKmersIndexEnd checks end case.
 func ExampleKmersIndexEnd() {
-	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
-	header, kmer := km.Next()
-	for ; header != ""; header, kmer = km.Next() {
+	km := kmers.New("testdata/ECI-2866_lcl.fasta")
+	var header, kmer string
+	h, k := km.Next()
+	for ; h != ""; h, k = km.Next() {
+		header, kmer = h, k
+		// log.Println(header, kmer)
 	}
 	fmt.Println(header)
 	fmt.Println(kmer)
 	// Output:
-	// >FAVS01000195.1 Escherichia coli strain ED647 genome assembly, contig: out_195, whole genome shotgun sequence
-	// TGTGGCTCAGC
+	// >lcl|ECI-2866|NODE_22_length_88582_cov_33.0406_ID_43
+	// TACGGATTCTT
+}
+
+// ExampleKmersIndexDiff checks Last of a contig before switching.
+func ExampleKmersIndexDiff() {
+	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
+	var header, kmer string
+	h, k := km.Next()
+	header, kmer = h, k
+	for ; h == header; h, k = km.Next() {
+		header, kmer = h, k
+		log.Println(header, kmer)
+	}
+	fmt.Println(header)
+	fmt.Println(kmer)
+	// Output:
+	// >FAVS01000269.1 Escherichia coli strain ED647 genome assembly, contig: out_269, whole genome shotgun sequence
+	// TACTGCTACTG
 }
