@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
+// Kmers contains all vars required to generate Kmers.
 type Kmers struct {
 	src       string
-	lines     []string
 	Headers   []string // location of all the headers in lines.
 	Sequences []string // location of all the sequences in lines.
 	li        int      // line index in Headers and Sequences.
@@ -45,6 +45,7 @@ func (km *Kmers) load() {
 	km.Sequences = append(km.Sequences, string(seq))
 }
 
+// New creates a new Kmere struct.
 func New(s string) *Kmers {
 	km := &Kmers{
 		src: s,
@@ -56,6 +57,7 @@ func New(s string) *Kmers {
 	return km
 }
 
+// Next emits the next kmer.
 func (km *Kmers) Next() (string, string) {
 	lastOfSequences := km.li == len(km.Sequences)-1
 	endOfSeq := km.pi+km.K > len(km.Sequences[km.li])
