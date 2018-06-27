@@ -29,26 +29,20 @@ func (km *Kmers) load() {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
 
+	seq := make([]byte, 0)
 	for scanner.Scan() {
-		km.lines = append(km.lines, scanner.Text())
-	}
-}
-
-func (km *Kmers) index() {
-	seq := ""
-	for _, line := range km.lines {
-		if strings.HasPrefix(line, ">") {
-			if seq != "" {
-				km.Sequences = append(km.Sequences, seq)
-				seq = ""
+		s := scanner.Text()
+		if strings.HasPrefix(s, ">") {
+			if len(seq) != 0 {
+				km.Sequences = append(km.Sequences, string(seq))
+				seq = nil
 			}
-			km.Headers = append(km.Headers, line)
+			km.Headers = append(km.Headers, s)
 		} else {
-			seq = seq + line
+			seq = append(seq, []byte(s)...)
 		}
 	}
-	km.Sequences = append(km.Sequences, seq)
-	km.lines = nil
+	km.Sequences = append(km.Sequences, string(seq))
 }
 
 func New(s string) *Kmers {
@@ -59,7 +53,6 @@ func New(s string) *Kmers {
 		K:   11,
 	}
 	km.load()
-	km.index()
 	return km
 }
 
@@ -91,7 +84,7 @@ func (km *Kmers) Next() (string, string) {
 	sl := km.Sequences[km.li][km.pi : km.pi+km.K]
 
 	// Increment.
-	km.pi += km.K
+	km.pi++
 
 	return header, sl
 }
