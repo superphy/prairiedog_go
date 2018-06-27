@@ -1,4 +1,4 @@
-package prairiedog
+package main
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package prairiedog
+package main
 
 import (
 	"log"
@@ -44,7 +44,7 @@ func main() {
 	defer g.bd.Close()
 
 	// Load a genome file.
-	km := kmers.New("somefile.fasta")
+	km := kmers.New("testdata/ECI-2523.fsa")
 
 	// TODO: remove
 	_ = g
