@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/superphy/prairiedog/kmers"
@@ -87,7 +86,7 @@ func ExampleKmersIndexDiff() {
 	header, kmer = h, k
 	for ; h == header; h, k = km.Next() {
 		header, kmer = h, k
-		log.Println(header, kmer)
+		// log.Println(header, kmer)
 	}
 	fmt.Println(header)
 	fmt.Println(kmer)

@@ -2,6 +2,11 @@
 
 ![prairiedog mascot](.daisy.png)
 
+[![Build Status](https://travis-ci.org/superphy/prairiedog.svg?branch=master)](https://travis-ci.org/superphy/prairiedog)
+[![Go Report Card](https://goreportcard.com/badge/github.com/superphy/prairiedog)](https://goreportcard.com/report/github.com/superphy/prairiedog)
+[![Coverage Status](https://coveralls.io/repos/github/superphy/prairiedog/badge.svg?branch=master)](https://coveralls.io/github/superphy/prairiedog?branch=master)
+[![GoDoc](https://godoc.org/github.com/superphy/prairiedog?status.svg)](https://godoc.org/github.com/superphy/prairiedog)
+
 # Introduction
 
 Public health laboratories are currently moving to whole-genome sequence (WGS) based analyses, and require software methods for characterizing bacterial species based on WGS data.

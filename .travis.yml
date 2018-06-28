@@ -6,13 +6,18 @@ go:
 services:
   - docker
 
-before_install:
+install:
+  - go get github.com/mattn/goveralls
+  - go get golang.org/x/tools/cmd/cover
+
+after_install:
   - docker-compose up -d
 
 script:
   - go test -v ./...
   - go run main.go
   - go run main.go version
+  - goveralls -service=travis-ci
   
 notifications:
   email: false
