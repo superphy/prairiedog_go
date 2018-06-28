@@ -6,9 +6,8 @@ go:
 services:
   - docker
 
-after_install:
+before_install:
   - docker-compose up -d
-  - go get github.com/mattn/goveralls
 
 script:
   - go test -v ./...
@@ -16,6 +15,7 @@ script:
   - go run main.go version
 
 after_success:
+  - go get github.com/mattn/goveralls
   - $GOPATH/bin/goveralls -service=travis-ci
 
 notifications:
