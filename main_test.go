@@ -95,3 +95,13 @@ func ExampleKmersIndexDiff() {
 	// >FAVS01000269.1 Escherichia coli strain ED647 genome assembly, contig: out_269, whole genome shotgun sequence
 	// TACTGCTACTG
 }
+
+func BenchmarkNewNode(b *testing.B) {
+	g := pangenome.NewGraph()
+	km := kmers.New("testdata/ECI-2523.fsa")
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, seq := km.Next()
+		g.CreateNode(seq)
+	}
+}
