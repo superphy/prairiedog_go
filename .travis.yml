@@ -6,11 +6,9 @@ go:
 services:
   - docker
 
-install:
-  - go get github.com/mattn/goveralls
-
 after_install:
   - docker-compose up -d
+  - go get github.com/mattn/goveralls
 
 script:
   - go test -v ./...
