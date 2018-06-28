@@ -1,7 +1,7 @@
 package pangenome
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/dgraph-io/badger"
 	"github.com/dgraph-io/dgo"
@@ -11,30 +11,17 @@ import (
 type Graph struct {
 	dg *dgo.Dgraph
 	bd *badger.DB
-	k  int
-}
-
-func (g *Graph) setupBadger() {
-	// Open the Badger database located in the /tmp/badger directory.
-	// It will be created if it doesn't exist.
-	opts := badger.DefaultOptions
-	opts.Dir = "/tmp/badger"
-	opts.ValueDir = "/tmp/badger"
-	db, err := badger.Open(opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	g.bd = db
+	K  int
 }
 
 func NewGraph() *Graph {
-	g := &Graph{}
-	g.dg = newClient("localhost", "9080")
-	g.k = 11
-	// Sets up Dgraph.
-	setup(g.dg)
-	// Sets up Badger.
-	g.setupBadger()
+	g := &Graph{
+		K: 11,
+	}
+	// Create a connection to Dgraph.
+	g.dg = setupDgraph("localhost", "9080")
+	// Create a connection to Badger.
+	g.bd = setupBadger()
 	return g
 }
 
@@ -45,6 +32,9 @@ func Run() {
 
 	// Load a genome file.
 	km := kmers.New("testdata/ECI-2523.fsa")
+
+	h, s := km.Next()
+	fmt.Println(h, s)
 
 	// TODO: remove
 	_ = g
