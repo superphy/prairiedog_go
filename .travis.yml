@@ -16,6 +16,8 @@ script:
   - go test -v ./...
   - go run main.go
   - go run main.go version
+
+after_success:
   - $GOPATH/bin/goveralls -service=travis-ci
   
 notifications:
