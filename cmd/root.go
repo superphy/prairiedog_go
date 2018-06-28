@@ -10,26 +10,23 @@ import (
 	"github.com/superphy/prairiedog/pangenome"
 )
 
-var (
-	// Used for flags.
-	cfgFile, projectBase, userLicense string
+var cfgFile, projectBase, userLicense string
 
-	rootCmd = &cobra.Command{
-		Use:   "prairiedog",
-		Short: "prairiedog creates pangenome graphs",
-		Long: `A pangenome graph generator with storage in Dgraph
+var rootCmd = &cobra.Command{
+	Use:   "prairiedog",
+	Short: "prairiedog creates pangenome graphs",
+	Long: `A pangenome graph generator with storage in Dgraph
 					and Bagder. Implements a cross between a De Bruijn
 					Graph and a Li-Stephen model. Source: github.com/superphy/prairiedog.`,
-		Run: func(cmd *cobra.Command, args []string) {
-			pangenome.Run()
-		},
-	}
-)
+	Run: func(cmd *cobra.Command, args []string) {
+		pangenome.Run()
+	},
+}
 
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.prairiedog.yaml)")
 	rootCmd.PersistentFlags().StringVarP(&projectBase, "projectbase", "b", "", "github.com/superphy/")
 	rootCmd.PersistentFlags().StringP("author", "a", "NML", "National Microbiology Lab")
 	rootCmd.PersistentFlags().StringVarP(&userLicense, "license", "l", "", "Apache 2.0")
@@ -43,6 +40,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 }
 
+// initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -55,14 +53,16 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".cobra" (without extension).
+		// Search config in home directory with name ".prairiedog2" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".cobra")
+		viper.SetConfigName(".prairiedog")
 	}
 
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("Can't read config:", err)
-		os.Exit(1)
+	viper.AutomaticEnv() // read in environment variables that match
+
+	// If a config file is found, read it in.
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 }
 
@@ -71,7 +71,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of prairiedog",
 	Long:  `All software has versions. This is prairiedogs's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("prairiedog v0.0.1 -- HEAD")
+		fmt.Println("prairiedog v0.0.1")
 	},
 }
 
