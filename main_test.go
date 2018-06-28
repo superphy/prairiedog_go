@@ -1,4 +1,4 @@
-package pangenome
+package main
 
 import (
 	"fmt"
@@ -6,10 +6,11 @@ import (
 	"testing"
 
 	"github.com/superphy/prairiedog/kmers"
+	"github.com/superphy/prairiedog/pangenome"
 )
 
 func BenchmarkNew(*testing.B) {
-	NewGraph()
+	pangenome.NewGraph()
 }
 func ExampleKmers() {
 	km := kmers.New("testdata/172.fa")
@@ -80,7 +81,7 @@ func ExampleKmersIndexEnd() {
 
 // ExampleKmersIndexDiff checks last of a contig before switching.
 func ExampleKmersIndexDiff() {
-	km := kmers.New("github.com/superphy/prairiedog/testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
+	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
 	var header, kmer string
 	h, k := km.Next()
 	header, kmer = h, k

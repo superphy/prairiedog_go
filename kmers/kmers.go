@@ -43,6 +43,9 @@ func (km *Kmers) load() {
 		}
 	}
 	km.Sequences = append(km.Sequences, string(seq))
+	if len(km.Sequences) == 0 {
+		log.Fatal("Couldn't load any sequences from file.")
+	}
 }
 
 // New creates a new Kmere struct.

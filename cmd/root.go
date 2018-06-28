@@ -8,11 +8,11 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "hugo",
-	Short: "Hugo is a very fast static site generator",
-	Long: `A Fast and Flexible Static Site Generator built with
-                love by spf13 and friends in Go.
-                Complete documentation is available at http://hugo.spf13.com`,
+	Use:   "prairiedog",
+	Short: "prairiedog creates pangenome graphs",
+	Long: `A pangenome graph generator with storage in Dgraph
+				and Bagder. Implements a cross between a De Bruijn
+				Graph and a Li-Stephen model. Source: github.com/superphy/prairiedog.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},
