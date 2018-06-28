@@ -26,7 +26,8 @@ Our approach offloads data storage to a generic graph store, and focuses on unco
 prairiedog is a Go application which uses [Dgraph](https://github.com/dgraph-io/dgraph) for the graph layer and [Badger](https://github.com/dgraph-io/badger) for the k-mer: count mapping.
 We chose Dgraph as a hedge for eventual sharding requirements depending on the size of the sampled population.
 For the data structure, we use a novel combined approach integrating a De Bruijn graph (with 11-mer nodes) along with weighted directed edges representing emission probabilities as in a Li-Stephens model [Li, Stephens, 2003].
-The core construction method is as follows:
+
+The core construction method is pretty simple, and uncomprossed, as follows:
 
 ```python
 for kmer, nextkmer in seed/new genome:
@@ -46,7 +47,7 @@ for kmer, nextkmer in seed/new genome:
     create_edge()
 ```
 
-While edge weights have sampling bias, this allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
+While edge weights have sampling biases, this allows us to simulate haplotypes which has not been possible in the past [Computational Pan-Genomics Consortium, 2016].
 Retrieving genes and variants can be performed as in a De Bruijn graph with the added benefit of estimating occurrence probabilities based off a given collection of genomes used in construction.
 Our approach also extends to new samples and is more accurate as additional samples are sequenced.
 

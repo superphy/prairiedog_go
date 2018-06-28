@@ -28,7 +28,6 @@ func setup(c *dgo.Dgraph) {
 	err := c.Alter(context.Background(), &api.Operation{
 		Schema: `
 			sequence: string @index(term) .
-			count: int .
 		`,
 	})
 	if err != nil {

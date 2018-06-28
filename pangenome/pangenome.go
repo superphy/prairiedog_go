@@ -38,7 +38,7 @@ func NewGraph() *Graph {
 	return g
 }
 
-func main() {
+func Run() {
 	// Databases.
 	g := NewGraph()
 	defer g.bd.Close()
