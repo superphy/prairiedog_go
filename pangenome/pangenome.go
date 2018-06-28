@@ -40,7 +40,7 @@ func NewGraph() *Graph {
 	return g
 }
 
-func (g *Graph) CreateNode(seq string) *api.Assigned {
+func (g *Graph) CreateNode(seq string) (*api.Assigned, error) {
 	ctx := context.Background()
 
 	node := KmerNode{
@@ -63,7 +63,7 @@ func (g *Graph) CreateNode(seq string) *api.Assigned {
 	}
 
 	// Return the UID assigned by Dgraph.
-	return assigned
+	return assigned, err
 }
 
 func Run() {

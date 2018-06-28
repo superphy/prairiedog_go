@@ -96,6 +96,16 @@ func ExampleKmersIndexDiff() {
 	// TACTGCTACTG
 }
 
+func ExampleNewNode() {
+	g := pangenome.NewGraph()
+	km := kmers.New("testdata/ECI-2523.fsa")
+	_, seq := km.Next()
+	_, err := g.CreateNode(seq)
+	fmt.Println(err)
+	// Output:
+	// <nil>
+}
+
 func BenchmarkNewNode(b *testing.B) {
 	g := pangenome.NewGraph()
 	km := kmers.New("testdata/ECI-2523.fsa")
