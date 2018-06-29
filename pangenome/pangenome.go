@@ -20,7 +20,7 @@ type Graph struct {
 }
 
 type KmerNode struct {
-	Uid          string     `json:"uid,omitempty"`
+	UID          uint64     `json:"uid,omitempty"`
 	Sequence     string     `json:"sequence,omitempty"`
 	ForwardNodes []KmerNode `json:"forward,omitempty"`
 	ReverseNodes []KmerNode `json:"reverse,omitempty"`
@@ -71,37 +71,32 @@ func (g *Graph) CreateNode(seq string) (uint64, error) {
 	return uid, err
 }
 
-// func (g *Graph) CreateEdge(seqA, seqB string) (*api.Assigned, error) {
-// 	ctx := context.Background()
+func (g *Graph) CreateEdge(src uint64, dst uint64) (*api.Assigned, error) {
+	ctx := context.Background()
 
-// 	nodeB := KmerNode{
-// 		Sequence: seqB,
-// 	}
+	srcNode := KmerNode{
+		UID: src,
+		ForwardNodes: []KmerNode{{
+			UID: dst,
+		}},
+	}
 
-// 	nodeA := KmerNode{
-// 		Sequence: seqA,
-// 		ForwardNodes
-// 	}
+	nb, err := json.Marshal(srcNode)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// 	nb, err := json.Marshal(node)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+	mu := &api.Mutation{
+		CommitNow: true,
+	}
 
-// 	mu := &api.Mutation{
-// 		CommitNow: true,
-// 	}
-
-// 	mu.SetJson = nb
-// 	assigned, err := g.dg.NewTxn().Mutate(ctx, mu)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	// Return the UID assigned by Dgraph.
-// 	uid := assigned.Uids
-// 	return uid, err
-// }
+	mu.SetJson = nb
+	assigned, err := g.dg.NewTxn().Mutate(ctx, mu)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return assigned, err
+}
 
 func Run() {
 	// Databases.

@@ -136,11 +136,14 @@ func ExampleNewEdge() {
 	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
 	_, seq1 := km.Next()
 	_, seq2 := km.Next()
-	_, err := g.CreateNode(seq1)
+	uid1, err := g.CreateNode(seq1)
 	fmt.Println(err)
-	_, err = g.CreateNode(seq2)
+	uid2, err := g.CreateNode(seq2)
+	fmt.Println(err)
+	_, err = g.CreateEdge(uid1, uid2)
 	fmt.Println(err)
 	// Output:
+	// <nil>
 	// <nil>
 	// <nil>
 }
