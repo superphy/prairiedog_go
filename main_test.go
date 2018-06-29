@@ -105,6 +105,22 @@ func ExampleNewNode() {
 	// <nil>
 }
 
+func ExampleNewNodes() {
+	g := pangenome.NewGraph()
+	km := kmers.New("testdata/ECI-2523.fsa")
+	_, seq := km.Next()
+	uid1, _ := g.CreateNode(seq)
+	fmt.Println(uid1)
+	_, seq = km.Next()
+	uid2, _ := g.CreateNode(seq)
+	fmt.Println(uid2)
+	_, seq = km.Next()
+	uid3, _ := g.CreateNode(seq)
+	fmt.Println(uid3)
+	// Output:
+	// <nil>
+}
+
 func BenchmarkNewNode(b *testing.B) {
 	g := pangenome.NewGraph()
 	km := kmers.New("testdata/ECI-2523.fsa")
@@ -113,4 +129,18 @@ func BenchmarkNewNode(b *testing.B) {
 		_, seq := km.Next()
 		g.CreateNode(seq)
 	}
+}
+
+func ExampleNewEdge() {
+	g := pangenome.NewGraph()
+	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
+	_, seq1 := km.Next()
+	_, seq2 := km.Next()
+	_, err := g.CreateNode(seq1)
+	fmt.Println(err)
+	_, err = g.CreateNode(seq2)
+	fmt.Println(err)
+	// Output:
+	// <nil>
+	// <nil>
 }

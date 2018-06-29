@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/dgraph-io/badger"
 	"github.com/dgraph-io/dgo"
@@ -40,7 +41,7 @@ func NewGraph() *Graph {
 	return g
 }
 
-func (g *Graph) CreateNode(seq string) (*api.Assigned, error) {
+func (g *Graph) CreateNode(seq string) (uint64, error) {
 	ctx := context.Background()
 
 	node := KmerNode{
@@ -63,8 +64,44 @@ func (g *Graph) CreateNode(seq string) (*api.Assigned, error) {
 	}
 
 	// Return the UID assigned by Dgraph.
-	return assigned, err
+	uid, err := strconv.ParseUint(assigned.Uids["blank-0"][2:], 16, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return uid, err
 }
+
+// func (g *Graph) CreateEdge(seqA, seqB string) (*api.Assigned, error) {
+// 	ctx := context.Background()
+
+// 	nodeB := KmerNode{
+// 		Sequence: seqB,
+// 	}
+
+// 	nodeA := KmerNode{
+// 		Sequence: seqA,
+// 		ForwardNodes
+// 	}
+
+// 	nb, err := json.Marshal(node)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+
+// 	mu := &api.Mutation{
+// 		CommitNow: true,
+// 	}
+
+// 	mu.SetJson = nb
+// 	assigned, err := g.dg.NewTxn().Mutate(ctx, mu)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+
+// 	// Return the UID assigned by Dgraph.
+// 	uid := assigned.Uids
+// 	return uid, err
+// }
 
 func Run() {
 	// Databases.
