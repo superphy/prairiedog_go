@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"testing"
 
 	"github.com/superphy/prairiedog/kmers"
 	"github.com/superphy/prairiedog/pangenome"
+	"github.com/superphy/prairiedog/utils"
 )
 
 func BenchmarkNew(*testing.B) {
@@ -97,6 +99,7 @@ func ExampleKmersIndexDiff() {
 
 func ExampleNewNode() {
 	g := pangenome.NewGraph()
+	defer g.Close()
 	km := kmers.New("testdata/ECI-2523.fsa")
 	_, seq := km.Next()
 	_, err := g.CreateNode(seq)
@@ -107,6 +110,7 @@ func ExampleNewNode() {
 
 func ExampleNewNodes() {
 	g := pangenome.NewGraph()
+	defer g.Close()
 	km := kmers.New("testdata/ECI-2523.fsa")
 	_, seq := km.Next()
 	uid1, _ := g.CreateNode(seq)
@@ -123,6 +127,7 @@ func ExampleNewNodes() {
 
 func BenchmarkNewNode(b *testing.B) {
 	g := pangenome.NewGraph()
+	defer g.Close()
 	km := kmers.New("testdata/ECI-2523.fsa")
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -133,6 +138,7 @@ func BenchmarkNewNode(b *testing.B) {
 
 func ExampleNewEdge() {
 	g := pangenome.NewGraph()
+	defer g.Close()
 	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
 	_, seq1 := km.Next()
 	_, seq2 := km.Next()
@@ -146,4 +152,24 @@ func ExampleNewEdge() {
 	// <nil>
 	// <nil>
 	// <nil>
+}
+
+func ExampleWalk() {
+	_, err := utils.Walk("testdata")
+	fmt.Println(err)
+	// Output:
+	// <nil>
+}
+
+func BenchmarkCreateAll(b *testing.B) {
+	log.Println("Starting becnhmark.")
+	g := pangenome.NewGraph()
+	log.Println("Graph created OK.")
+	defer g.Close()
+	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
+	log.Println("Kmers created OK.")
+	b.ResetTimer()
+	log.Println("Starting Node/Edge creation.")
+	g.CreateAll(km)
+	log.Println("Nodes/Edges created OK.")
 }

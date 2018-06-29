@@ -31,13 +31,16 @@ var Schema = `
 `
 
 func NewGraph() *Graph {
+	log.Println("Starting NewGraph().")
 	g := &Graph{
 		K: 11,
 	}
 	// Create a connection to Dgraph.
 	g.dg = setupDgraph("localhost", "9080", Schema)
+	log.Println("Dgraph connected OK.")
 	// Create a connection to Badger.
 	g.bd = setupBadger()
+	log.Println("Badger connected OK.")
 	return g
 }
 
@@ -98,10 +101,33 @@ func (g *Graph) CreateEdge(src uint64, dst uint64) (*api.Assigned, error) {
 	return assigned, err
 }
 
+// CreateAll Nodes+Edges for all kmers in km.
+func (g *Graph) CreateAll(km *kmers.Kmers) {
+	var seq1, seq2 string
+	_, seq1 = km.Next()
+	for km.HasNext() {
+		for km.ContigHasNext() {
+			_, seq2 = km.Next()
+			uid1, err := g.CreateNode(seq1)
+			if err != nil {
+				log.Fatal(err)
+			}
+			uid2, err := g.CreateNode(seq2)
+			if err != nil {
+				log.Fatal(err)
+			}
+			_, err = g.CreateEdge(uid1, uid2)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+}
+
 func Run() {
 	// Databases.
 	g := NewGraph()
-	defer g.bd.Close()
+	defer g.Close()
 
 	// Load a genome file.
 	km := kmers.New("testdata/ECI-2523.fsa")
@@ -114,4 +140,9 @@ func Run() {
 	// TODO: remove
 	_ = g
 	_ = km
+}
+
+// Close handles teardown.
+func (g *Graph) Close() {
+	defer g.bd.Close()
 }

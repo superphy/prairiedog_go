@@ -60,18 +60,28 @@ func New(s string) *Kmers {
 	return km
 }
 
-// Next emits the next kmer.
-func (km *Kmers) Next() (string, string) {
+// HasNext returns true is the source file still has kmers.
+func (km *Kmers) HasNext() bool {
 	lastOfSequences := km.li == len(km.Sequences)-1
 	endOfSeq := km.pi+km.K > len(km.Sequences[km.li])
+	return !(lastOfSequences && endOfSeq)
+}
 
+// ContigHasNext returns true is the current contig in a source file still has kmers.
+func (km *Kmers) ContigHasNext() bool {
+	endOfSeq := km.pi+km.K > len(km.Sequences[km.li])
+	return !endOfSeq
+}
+
+// Next emits the next kmer.
+func (km *Kmers) Next() (string, string) {
 	// Done.
-	if lastOfSequences && endOfSeq {
+	if !km.HasNext() {
 		return "", ""
 	}
 
 	// Move to next sequence.
-	if endOfSeq {
+	if !km.ContigHasNext() {
 		km.li++
 		km.pi = 0
 	}

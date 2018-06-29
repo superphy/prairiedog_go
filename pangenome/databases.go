@@ -10,7 +10,6 @@ import (
 	"github.com/dgraph-io/badger"
 	"github.com/dgraph-io/dgo"
 	"github.com/dgraph-io/dgo/protos/api"
-	homedir "github.com/mitchellh/go-homedir"
 	"google.golang.org/grpc"
 )
 
@@ -46,14 +45,13 @@ func setupBadger() *badger.DB {
 	// It will be created if it doesn't exist.
 	opts := badger.DefaultOptions
 
-	// Find home directory.
-	home, err := homedir.Dir()
+	// Get currenty working directory.
+	wdir, err := os.Getwd()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
-	dir := path.Join(home, "badger")
+	dir := path.Join(wdir, "badger")
 
 	opts.Dir = dir
 	opts.ValueDir = dir
