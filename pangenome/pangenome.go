@@ -102,7 +102,7 @@ func (g *Graph) CreateEdge(src uint64, dst uint64) (*api.Assigned, error) {
 }
 
 // CreateAll Nodes+Edges for all kmers in km.
-func (g *Graph) CreateAll(km *kmers.Kmers) {
+func (g *Graph) CreateAll(km *kmers.Kmers) (bool, error) {
 	var seq1, seq2 string
 	_, seq1 = km.Next()
 	for km.HasNext() {
@@ -111,17 +111,21 @@ func (g *Graph) CreateAll(km *kmers.Kmers) {
 			uid1, err := g.CreateNode(seq1)
 			if err != nil {
 				log.Fatal(err)
+				return false, err
 			}
 			uid2, err := g.CreateNode(seq2)
 			if err != nil {
 				log.Fatal(err)
+				return false, err
 			}
 			_, err = g.CreateEdge(uid1, uid2)
 			if err != nil {
 				log.Fatal(err)
+				return false, err
 			}
 		}
 	}
+	return true, nil
 }
 
 func Run() {

@@ -173,3 +173,13 @@ func BenchmarkCreateAll(b *testing.B) {
 	g.CreateAll(km)
 	log.Println("Nodes/Edges created OK.")
 }
+
+func ExampleCreateAll() {
+	g := pangenome.NewGraph()
+	defer g.Close()
+	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
+	b, _ := g.CreateAll(km)
+	fmt.Println(b)
+	// Output:
+	// true
+}
