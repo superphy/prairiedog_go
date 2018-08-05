@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"testing"
@@ -98,55 +99,67 @@ func ExampleKmersIndexDiff() {
 }
 
 func ExampleNewNode() {
+	contextMain, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	g := pangenome.NewGraph()
 	defer g.Close()
 	km := kmers.New("testdata/ECI-2523.fsa")
 	_, seq := km.Next()
-	_, err := g.CreateNode(seq)
+	_, err := g.CreateNode(seq, contextMain)
 	fmt.Println(err)
 	// Output:
 	// <nil>
 }
 
 func ExampleNewNodes() {
+	contextMain, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	g := pangenome.NewGraph()
 	defer g.Close()
 	km := kmers.New("testdata/ECI-2523.fsa")
 	_, seq := km.Next()
-	uid1, _ := g.CreateNode(seq)
+	uid1, _ := g.CreateNode(seq, contextMain)
 	fmt.Println(uid1)
 	_, seq = km.Next()
-	uid2, _ := g.CreateNode(seq)
+	uid2, _ := g.CreateNode(seq, contextMain)
 	fmt.Println(uid2)
 	_, seq = km.Next()
-	uid3, _ := g.CreateNode(seq)
+	uid3, _ := g.CreateNode(seq, contextMain)
 	fmt.Println(uid3)
 	// Output:
 	// <nil>
 }
 
 func BenchmarkNewNode(b *testing.B) {
+	contextMain, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	g := pangenome.NewGraph()
 	defer g.Close()
 	km := kmers.New("testdata/ECI-2523.fsa")
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, seq := km.Next()
-		g.CreateNode(seq)
+		g.CreateNode(seq, contextMain)
 	}
 }
 
 func ExampleNewEdge() {
+	contextMain, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	g := pangenome.NewGraph()
 	defer g.Close()
 	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
 	_, seq1 := km.Next()
 	_, seq2 := km.Next()
-	uid1, err := g.CreateNode(seq1)
+	uid1, err := g.CreateNode(seq1, contextMain)
 	fmt.Println(err)
-	uid2, err := g.CreateNode(seq2)
+	uid2, err := g.CreateNode(seq2, contextMain)
 	fmt.Println(err)
-	_, err = g.CreateEdge(uid1, uid2)
+	_, err = g.CreateEdge(uid1, uid2, contextMain)
 	fmt.Println(err)
 	// Output:
 	// <nil>
@@ -162,6 +175,9 @@ func ExampleWalk() {
 }
 
 func BenchmarkCreateAll(b *testing.B) {
+	contextMain, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	log.Println("Starting becnhmark.")
 	g := pangenome.NewGraph()
 	log.Println("Graph created OK.")
@@ -170,15 +186,18 @@ func BenchmarkCreateAll(b *testing.B) {
 	log.Println("Kmers created OK.")
 	b.ResetTimer()
 	log.Println("Starting Node/Edge creation.")
-	g.CreateAll(km)
+	g.CreateAll(km, contextMain)
 	log.Println("Nodes/Edges created OK.")
 }
 
 func ExampleCreateAll() {
+	contextMain, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	g := pangenome.NewGraph()
 	defer g.Close()
 	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
-	b, _ := g.CreateAll(km)
+	b, _ := g.CreateAll(km, contextMain)
 	fmt.Println(b)
 	// Output:
 	// true

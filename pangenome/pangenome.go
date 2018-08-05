@@ -78,8 +78,9 @@ func (g *Graph) GetKV(key string) (interface{}, error) {
 	return val, nil
 }
 
-func (g *Graph) CreateNode(seq string) (uint64, error) {
-	ctx := context.Background()
+func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, error) {
+	ctx, cancel := context.WithCancel(contextMain)
+	defer cancel()
 
 	node := KmerNode{
 		Sequence: seq,
@@ -108,8 +109,9 @@ func (g *Graph) CreateNode(seq string) (uint64, error) {
 	return uid, err
 }
 
-func (g *Graph) CreateEdge(src uint64, dst uint64) (*api.Assigned, error) {
-	ctx := context.Background()
+func (g *Graph) CreateEdge(src uint64, dst uint64, contextMain context.Context) (*api.Assigned, error) {
+	ctx, cancel := context.WithCancel(contextMain)
+	defer cancel()
 
 	srcNode := KmerNode{
 		UID: src,
@@ -136,23 +138,26 @@ func (g *Graph) CreateEdge(src uint64, dst uint64) (*api.Assigned, error) {
 }
 
 // CreateAll Nodes+Edges for all kmers in km.
-func (g *Graph) CreateAll(km *kmers.Kmers) (bool, error) {
+func (g *Graph) CreateAll(km *kmers.Kmers, contextMain context.Context) (bool, error) {
+	ctx, cancel := context.WithCancel(contextMain)
+	defer cancel()
+
 	var seq1, seq2 string
 	_, seq1 = km.Next()
 	for km.HasNext() {
 		for km.ContigHasNext() {
 			_, seq2 = km.Next()
-			uid1, err := g.CreateNode(seq1)
+			uid1, err := g.CreateNode(seq1, ctx)
 			if err != nil {
 				log.Fatal(err)
 				return false, err
 			}
-			uid2, err := g.CreateNode(seq2)
+			uid2, err := g.CreateNode(seq2, ctx)
 			if err != nil {
 				log.Fatal(err)
 				return false, err
 			}
-			_, err = g.CreateEdge(uid1, uid2)
+			_, err = g.CreateEdge(uid1, uid2, ctx)
 			if err != nil {
 				log.Fatal(err)
 				return false, err
@@ -166,6 +171,8 @@ func Run() {
 	// Databases.
 	g := NewGraph()
 	defer g.Close()
+	contextMain, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	// Load a genome file.
 	km := kmers.New("testdata/ECI-2523.fsa")
@@ -173,7 +180,7 @@ func Run() {
 	h, seq := km.Next()
 	fmt.Println(h, seq)
 
-	g.CreateNode(seq)
+	g.CreateNode(seq, contextMain)
 
 	// TODO: remove
 	_ = g
