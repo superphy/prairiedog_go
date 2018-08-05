@@ -26,17 +26,18 @@ type KmerNode struct {
 	ReverseNodes []KmerNode `json:"reverse,omitempty"`
 }
 
-var Schema = `
+var schema = `
 	sequence: string @index(term) .
 `
 
+// NewGraph is the main setup for backends.
 func NewGraph() *Graph {
 	log.Println("Starting NewGraph().")
 	g := &Graph{
 		K: 11,
 	}
 	// Create a connection to Dgraph.
-	g.dg = setupDgraph("localhost", "9080", Schema)
+	g.dg, _ = setupDgraph("localhost", "9080", schema)
 	log.Println("Dgraph connected OK.")
 	// Create a connection to Badger.
 	g.bd = setupBadger()
