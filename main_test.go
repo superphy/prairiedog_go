@@ -183,3 +183,15 @@ func ExampleCreateAll() {
 	// Output:
 	// true
 }
+
+func ExampleKV() {
+	g := pangenome.NewGraph()
+	defer g.Close()
+	b, _ := g.SetKV("apple", 1)
+	fmt.Println(b)
+	v, _ := g.GetKV("apple")
+	fmt.Println(v)
+	// Output:
+	// true
+	// 1
+}
