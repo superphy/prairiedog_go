@@ -10,7 +10,7 @@ before_install:
   - docker-compose up -d
 
 script:
-  - go test -timeout 240s -v ./
+  - go test -timeout 600s -v ./
   - go run main.go
   - go run main.go version
 
