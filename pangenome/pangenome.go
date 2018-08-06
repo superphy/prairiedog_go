@@ -153,6 +153,7 @@ func (g *Graph) CreateAll(km *kmers.Kmers, contextMain context.Context) (bool, e
 	var seq1, seq2 string
 	_, seq1 = km.Next()
 	for km.HasNext() {
+		log.Println("outerloop")
 		for km.ContigHasNext() {
 			_, seq2 = km.Next()
 			uid1, err := g.CreateNode(seq1, ctx)
