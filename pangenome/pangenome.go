@@ -151,6 +151,7 @@ func (g *Graph) GetKVSliceUint64(key string) ([]uint64, error) {
 		if err != nil {
 			return err
 		}
+		log.Println(item)
 		val, err = item.Value()
 		if err != nil {
 			return err
@@ -161,6 +162,7 @@ func (g *Graph) GetKVSliceUint64(key string) ([]uint64, error) {
 		return nil, err
 	}
 	var sl []uint64
+	log.Println(val)
 	err = json.Unmarshal(val, sl)
 	if err != nil {
 		return nil, err
