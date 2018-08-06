@@ -133,8 +133,11 @@ func ExampleNewNodes() {
 	_, seq = km.Next()
 	uid3, _ := g.CreateNode(seq, contextMain)
 	fmt.Println(uid3)
+	// TODO: Not sure why we're starting from 2.
 	// Output:
-	// <nil>
+	// 2
+	// 3
+	// 4
 }
 
 func BenchmarkNewNode(b *testing.B) {
