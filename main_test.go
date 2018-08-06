@@ -255,5 +255,5 @@ func ExampleSetKVSliceUint64() {
 	fmt.Println(v)
 	// Output:
 	// true
-	// [1, 2]
+	// [1 2]
 }
