@@ -272,8 +272,11 @@ func ExampleSetKVSliceUint64Genome() {
 	b, _ := g.CreateAll(km, contextMain)
 	fmt.Println(b)
 
+	log.Println("Retrieving slice 1...")
 	v1, _ := g.GetKVSliceUint64(">FAVS01000269.1 Escherichia coli strain ED647 genome assembly, contig: out_269, whole genome shotgun sequence")
+	log.Println("Retrieving slice 2...")
 	v2, _ := g.GetKVSliceUint64(">FAVS01000267.1 Escherichia coli strain ED647 genome assembly, contig: out_267, whole genome shotgun sequence")
+	log.Println("Retrieving slice 3...")
 	v3, _ := g.GetKVSliceUint64(">FAVS01000266.1 Escherichia coli strain ED647 genome assembly, contig: out_266, whole genome shotgun sequence")
 	fmt.Println(v1)
 	fmt.Println(v2)
