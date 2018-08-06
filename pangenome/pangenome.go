@@ -57,7 +57,7 @@ func (g *Graph) DropAll(contextMain context.Context) (bool, error) {
 	return true, nil
 }
 
-// SetKV sets the key: value pair in Badger.
+// SetKVInt sets the key: value pair in Badger for ints.
 func (g *Graph) SetKVInt(key string, value int) (bool, error) {
 	err := g.bd.Update(func(txn *badger.Txn) error {
 		err := txn.Set([]byte(key), []byte(strconv.Itoa(value)))
@@ -69,10 +69,26 @@ func (g *Graph) SetKVInt(key string, value int) (bool, error) {
 	return true, nil
 }
 
-// SetKV sets the key: value pair in Badger.
+// SetKVStr sets the key: value pair in Badger for strings.
 func (g *Graph) SetKVStr(key string, value string) (bool, error) {
 	err := g.bd.Update(func(txn *badger.Txn) error {
 		err := txn.Set([]byte(key), []byte(value))
+		return err
+	})
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// SetKV sets the key: value pair in Badger for slices of uin64.
+func (g *Graph) SetKVSliceUint64(key string, value []uint64) (bool, error) {
+	buf, err := json.Marshal(value)
+	if err != nil {
+		return false, err
+	}
+	err = g.bd.Update(func(txn *badger.Txn) error {
+		err := txn.Set([]byte(key), buf)
 		return err
 	})
 	if err != nil {
@@ -125,6 +141,31 @@ func (g *Graph) GetKVStr(key string) (string, error) {
 	}
 	s := string(val[:])
 	return s, nil
+}
+
+// GetKVSliceUint64 gets the key: value pair in Badger.
+func (g *Graph) GetKVSliceUint64(key string) ([]uint64, error) {
+	var val []byte
+	err := g.bd.View(func(txn *badger.Txn) error {
+		item, err := txn.Get([]byte(key))
+		if err != nil {
+			return err
+		}
+		val, err = item.Value()
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	var sl []uint64
+	err = json.Unmarshal(val, sl)
+	if err != nil {
+		return nil, err
+	}
+	return sl, nil
 }
 
 func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, error) {
@@ -199,29 +240,47 @@ func (g *Graph) CreateAll(km *kmers.Kmers, contextMain context.Context) (bool, e
 	ctx, cancel := context.WithCancel(contextMain)
 	defer cancel()
 
-	var seq1, seq2 string
-	_, seq1 = km.Next()
+	var seq1, seq2, header1 string
+	// Initial Kmer.
+	header1, seq1 = km.Next()
+	// If there exists any kmers left in the genome.
 	for km.HasNext() {
+		var sl []uint64
+		// If there exists any kmers left in the particular contig.
 		for km.ContigHasNext() {
 			_, seq2 = km.Next()
+
 			uid1, err := g.CreateNode(seq1, ctx)
 			if err != nil {
 				log.Fatal(err)
 				return false, err
 			}
+
+			// Always append the first node.
+			sl = append(sl, uid1)
+
 			uid2, err := g.CreateNode(seq2, ctx)
 			if err != nil {
 				log.Fatal(err)
 				return false, err
 			}
+
+			// If on last kmer in a contig, append the second node.
+			if !km.ContigHasNext() {
+				sl = append(sl, uid2)
+			}
+
 			_, err = g.CreateEdge(uid1, uid2, ctx)
 			if err != nil {
 				log.Fatal(err)
 				return false, err
 			}
 			seq1 = seq2
+
 		}
-		_, seq1 = km.Next()
+		// Store the completed path for the contig.
+		g.
+			header1, seq1 = km.Next()
 	}
 	return true, nil
 }

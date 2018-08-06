@@ -239,3 +239,21 @@ func ExampleSetKVStr() {
 	// true
 	// cat
 }
+
+func ExampleSetKVUint64() {
+	g := pangenome.NewGraph()
+	defer g.Close()
+
+	// Create a test slice.
+	var sl []uint64
+	sl = append(sl, 1)
+	sl = append(sl, 2)
+
+	b, _ := g.SetKVUint64("sl", sl)
+	fmt.Println(b)
+	v, _ := g.GetKVUint64("sl")
+	fmt.Println(v)
+	// Output:
+	// true
+	// [1, 2]
+}
