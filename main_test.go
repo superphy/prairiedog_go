@@ -209,7 +209,7 @@ func ExampleCreateAll() {
 
 	g := pangenome.NewGraph()
 	defer g.Close()
-	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic_SHORTENED.fna")
+	km := kmers.New("testdata/GCA_900015696.1_ED647_contigs_genomic_SHORTENED.fna")
 	b, _ := g.CreateAll(km, contextMain)
 	fmt.Println(b)
 	// Output:

@@ -10,13 +10,17 @@ before_install:
   - docker-compose up -d
 
 script:
-  - go test -timeout 600s -v ./
+  - go test -timeout 120s -v ./
   - go run main.go
   - go run main.go version
 
 after_success:
   - go get github.com/mattn/goveralls
   - $GOPATH/bin/goveralls -service=travis-ci
+
+after_failure:
+  - ls -lah
+  - ls -lah testdata/
 
 notifications:
   email: false
