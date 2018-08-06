@@ -118,7 +118,12 @@ func ExampleNewNodes() {
 
 	g := pangenome.NewGraph()
 	defer g.Close()
+
+	// Make sure we're using a clean database.
+	g.DropAll(contextMain)
+
 	km := kmers.New("testdata/ECI-2523.fsa")
+
 	_, seq := km.Next()
 	uid1, _ := g.CreateNode(seq, contextMain)
 	fmt.Println(uid1)
@@ -138,7 +143,12 @@ func BenchmarkNewNode(b *testing.B) {
 
 	g := pangenome.NewGraph()
 	defer g.Close()
+
+	// Make sure we're using a clean database.
+	g.DropAll(contextMain)
+
 	km := kmers.New("testdata/ECI-2523.fsa")
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, seq := km.Next()

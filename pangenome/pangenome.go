@@ -45,6 +45,18 @@ func NewGraph() *Graph {
 	return g
 }
 
+// DropAll discards everything in Dgraph.
+func (g *Graph) DropAll(contextMain context.Context) (bool, error) {
+	ctx, cancel := context.WithCancel(contextMain)
+	defer cancel()
+
+	err := g.dg.Alter(ctx, &api.Operation{DropAll: true})
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // SetKV sets the key: value pair in Badger.
 func (g *Graph) SetKV(key string, value int) (bool, error) {
 	err := g.bd.Update(func(txn *badger.Txn) error {
