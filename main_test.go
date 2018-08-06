@@ -182,7 +182,7 @@ func BenchmarkCreateAll(b *testing.B) {
 	g := pangenome.NewGraph()
 	log.Println("Graph created OK.")
 	defer g.Close()
-	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
+	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic_SHORTENED.fna")
 	log.Println("Kmers created OK.")
 	b.ResetTimer()
 	log.Println("Starting Node/Edge creation.")
@@ -196,7 +196,7 @@ func ExampleCreateAll() {
 
 	g := pangenome.NewGraph()
 	defer g.Close()
-	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic.fna")
+	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic_SHORTENED.fna")
 	b, _ := g.CreateAll(km, contextMain)
 	fmt.Println(b)
 	// Output:
