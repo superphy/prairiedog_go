@@ -96,7 +96,11 @@ func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, err
 	}
 
 	mu.SetJson = nb
-	assigned, err := g.dg.NewTxn().Mutate(ctx, mu)
+
+	txn := g.dg.NewTxn()
+	defer txn.Discard(ctx)
+
+	assigned, err := txn.Mutate(ctx, mu)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -130,7 +134,11 @@ func (g *Graph) CreateEdge(src uint64, dst uint64, contextMain context.Context) 
 	}
 
 	mu.SetJson = nb
-	assigned, err := g.dg.NewTxn().Mutate(ctx, mu)
+
+	txn := g.dg.NewTxn()
+	defer txn.Discard(ctx)
+
+	assigned, err := txn.Mutate(ctx, mu)
 	if err != nil {
 		log.Fatal(err)
 	}
