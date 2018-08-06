@@ -264,19 +264,20 @@ func ExampleSetKVSliceUint64Genome() {
 
 	g := pangenome.NewGraph()
 	defer g.Close()
+
+	// Make sure we're using a clean database.
+	g.DropAll(contextMain)
+
 	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic_SHORTENED.fna")
 	b, _ := g.CreateAll(km, contextMain)
 	fmt.Println(b)
-	// Output:
-	// true
-
-	g := pangenome.NewGraph()
-	defer g.Close()
 
 	v1, _ := g.GetKVSliceUint64(">FAVS01000269.1 Escherichia coli strain ED647 genome assembly, contig: out_269, whole genome shotgun sequence")
 	v2, _ := g.GetKVSliceUint64(">FAVS01000267.1 Escherichia coli strain ED647 genome assembly, contig: out_267, whole genome shotgun sequence")
 	v3, _ := g.GetKVSliceUint64(">FAVS01000266.1 Escherichia coli strain ED647 genome assembly, contig: out_266, whole genome shotgun sequence")
-	fmt.Println(v)
+	fmt.Println(v1)
+	fmt.Println(v2)
+	fmt.Println(v3)
 	// Output:
 	// true
 	// []
