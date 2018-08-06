@@ -60,7 +60,7 @@ func (g *Graph) DropAll(contextMain context.Context) (bool, error) {
 // SetKV sets the key: value pair in Badger.
 func (g *Graph) SetKV(key string, value int) (bool, error) {
 	err := g.bd.Update(func(txn *badger.Txn) error {
-		err := txn.Set([]byte("answer"), []byte("42"))
+		err := txn.Set([]byte(key), []byte(strconv.Itoa(value)))
 		return err
 	})
 	if err != nil {
@@ -70,24 +70,28 @@ func (g *Graph) SetKV(key string, value int) (bool, error) {
 }
 
 // GetKV get the key: value pair in Badger.
-func (g *Graph) GetKV(key string) (interface{}, error) {
-	var val interface{}
+func (g *Graph) GetKV(key string) (int, error) {
+	var val []byte
 	err := g.bd.View(func(txn *badger.Txn) error {
-		item, err := txn.Get([]byte("answer"))
+		item, err := txn.Get([]byte(key))
 		if err != nil {
 			return err
 		}
-		val, err := item.Value()
+		val, err = item.Value()
 		if err != nil {
 			return err
 		}
-		fmt.Printf("The answer is: %s\n", val)
 		return nil
 	})
 	if err != nil {
-		return false, err
+		return -1, err
 	}
-	return val, nil
+	s := string(val[:])
+	evaluated, err := strconv.Atoi(s)
+	if err != nil {
+		return -1, err
+	}
+	return evaluated, nil
 }
 
 func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, error) {
