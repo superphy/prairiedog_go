@@ -216,14 +216,26 @@ func ExampleCreateAll() {
 	// true
 }
 
-func ExampleKV() {
+func ExampleSetKVInt() {
 	g := pangenome.NewGraph()
 	defer g.Close()
-	b, _ := g.SetKV("apple", 1)
+	b, _ := g.SetKVInt("apple", 1)
 	fmt.Println(b)
-	v, _ := g.GetKV("apple")
+	v, _ := g.GetKVInt("apple")
 	fmt.Println(v)
 	// Output:
 	// true
 	// 1
+}
+
+func ExampleSetKVStr() {
+	g := pangenome.NewGraph()
+	defer g.Close()
+	b, _ := g.SetKVStr("apple", "cat")
+	fmt.Println(b)
+	v, _ := g.GetKVStr("apple")
+	fmt.Println(v)
+	// Output:
+	// true
+	// cat
 }

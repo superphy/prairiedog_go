@@ -58,7 +58,7 @@ func (g *Graph) DropAll(contextMain context.Context) (bool, error) {
 }
 
 // SetKV sets the key: value pair in Badger.
-func (g *Graph) SetKV(key string, value int) (bool, error) {
+func (g *Graph) SetKVInt(key string, value int) (bool, error) {
 	err := g.bd.Update(func(txn *badger.Txn) error {
 		err := txn.Set([]byte(key), []byte(strconv.Itoa(value)))
 		return err
@@ -69,8 +69,20 @@ func (g *Graph) SetKV(key string, value int) (bool, error) {
 	return true, nil
 }
 
-// GetKV get the key: value pair in Badger.
-func (g *Graph) GetKV(key string) (int, error) {
+// SetKV sets the key: value pair in Badger.
+func (g *Graph) SetKVStr(key string, value string) (bool, error) {
+	err := g.bd.Update(func(txn *badger.Txn) error {
+		err := txn.Set([]byte(key), []byte(value))
+		return err
+	})
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// GetKVInt get the key: value pair in Badger.
+func (g *Graph) GetKVInt(key string) (int, error) {
 	var val []byte
 	err := g.bd.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(key))
@@ -92,6 +104,27 @@ func (g *Graph) GetKV(key string) (int, error) {
 		return -1, err
 	}
 	return evaluated, nil
+}
+
+// GetKVStr gets the key: value pair in Badger.
+func (g *Graph) GetKVStr(key string) (string, error) {
+	var val []byte
+	err := g.bd.View(func(txn *badger.Txn) error {
+		item, err := txn.Get([]byte(key))
+		if err != nil {
+			return err
+		}
+		val, err = item.Value()
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return "", err
+	}
+	s := string(val[:])
+	return s, nil
 }
 
 func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, error) {
