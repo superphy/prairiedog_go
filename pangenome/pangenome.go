@@ -279,8 +279,9 @@ func (g *Graph) CreateAll(km *kmers.Kmers, contextMain context.Context) (bool, e
 
 		}
 		// Store the completed path for the contig.
-		g.
-			header1, seq1 = km.Next()
+		g.SetKVSliceUint64(header1, sl)
+		// Grab next sequence.
+		header1, seq1 = km.Next()
 	}
 	return true, nil
 }
