@@ -270,6 +270,7 @@ func ExampleSetKVSliceUint64Genome() {
 
 	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic_SHORTENED.fna")
 	b, _ := g.CreateAll(km, contextMain)
+	log.Println("Done creating all nodes/edges.")
 	fmt.Println(b)
 
 	log.Println("Retrieving slice 1...")
