@@ -203,6 +203,43 @@ func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, err
 	return uid, err
 }
 
+func (g *Graph) GetNode(seq string, contextMain context.Context) (uint64, error) {
+	ctx, cancel := context.WithCancel(contextMain)
+	defer cancel()
+
+	txn := g.dg.NewTxn()
+	defer txn.Discard(ctx)
+
+	q := fmt.Sprintf(`
+		{
+			all(func: anyofterms(Sequence, %s)) {
+				uid
+			}
+		}
+	`, seq)
+	resp, err := txn.Query(ctx, q)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var decode struct {
+		All []struct {
+			Uid string
+		}
+	}
+	if err := json.Unmarshal(resp.GetJson(), &decode); err != nil {
+		log.Fatal(err)
+	}
+	if len(decode.All) == 0 {
+		return 0, nil
+	}
+	i, err := strconv.ParseUint(decode.All[0].Uid, 16, 64)
+	if err != nil {
+		return 0, nil
+	}
+	return i, nil
+}
+
 func (g *Graph) CreateEdge(src uint64, dst uint64, contextMain context.Context) (*api.Assigned, error) {
 	ctx, cancel := context.WithCancel(contextMain)
 	defer cancel()

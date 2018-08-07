@@ -104,12 +104,39 @@ func ExampleNewNode() {
 
 	g := pangenome.NewGraph()
 	defer g.Close()
+
+	// Make sure we're using a clean database.
+	g.DropAll(contextMain)
+
 	km := kmers.New("testdata/ECI-2523.fsa")
 	_, seq := km.Next()
 	_, err := g.CreateNode(seq, contextMain)
 	fmt.Println(err)
 	// Output:
 	// <nil>
+}
+
+func ExampleGetNode() {
+	contextMain, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	g := pangenome.NewGraph()
+	defer g.Close()
+
+	// Make sure we're using a clean database.
+	g.DropAll(contextMain)
+
+	km := kmers.New("testdata/ECI-2523.fsa")
+	_, seq := km.Next()
+	uid, err := g.CreateNode(seq, contextMain)
+	fmt.Println(err)
+	uidRetrieved, _ := g.GetNode(seq, contextMain)
+	log.Println(uid)
+	log.Println(uidRetrieved)
+	fmt.Println(uid == uidRetrieved)
+	// Output:
+	// <nil>
+	// true
 }
 
 func ExampleNewNodes() {
