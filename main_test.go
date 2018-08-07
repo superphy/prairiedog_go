@@ -266,8 +266,8 @@ func ExampleSetKVSliceUint64Genome() {
 	defer g.Close()
 
 	// Make sure we're using a clean database.
-	g.DropAll(contextMain)
-	log.Println("Dropped all values in Dgraph.")
+	// g.DropAll(contextMain)
+	// log.Println("Dropped all values in Dgraph.")
 
 	km := kmers.New("testdata/GCA_900015695.1_ED647_contigs_genomic_SHORTENED.fna")
 	log.Println("Created km OK.")
