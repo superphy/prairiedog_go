@@ -54,6 +54,10 @@ func (g *Graph) DropAll(contextMain context.Context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
+	// Ensure schema is still setup after dropping.
+	setupSchema(g.dg, schema)
+
 	return true, nil
 }
 
