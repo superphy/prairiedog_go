@@ -13,7 +13,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-func setupDgraph(address string, port string, schema string) (*dgo.Dgraph, error) {
+var Schema = `
+	sequence: string @index(term) .
+`
+
+func setupDgraph(address string, port string) (*dgo.Dgraph, error) {
 	// Dial a gRPC connection. The address to dial to can be configured when
 	// setting up the dgraph cluster.
 	db := fmt.Sprintf("%s:%s", address, port)
@@ -26,14 +30,14 @@ func setupDgraph(address string, port string, schema string) (*dgo.Dgraph, error
 		api.NewDgraphClient(d),
 	)
 
-	setupSchema(dc, schema)
+	setupSchema(dc)
 
 	return dc, err
 }
 
-func setupSchema(c *dgo.Dgraph, schema string) {
+func setupSchema(c *dgo.Dgraph) {
 	err := c.Alter(context.Background(), &api.Operation{
-		Schema: schema,
+		Schema: Schema,
 	})
 	if err != nil {
 		log.Fatal(err)

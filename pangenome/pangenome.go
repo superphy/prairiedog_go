@@ -21,14 +21,10 @@ type Graph struct {
 
 type KmerNode struct {
 	UID          uint64     `json:"uid,omitempty"`
-	Sequence     string     `json:"sequence,omitempty"`
+	sequence     string     `json:"sequence,omitempty"`
 	ForwardNodes []KmerNode `json:"forward,omitempty"`
 	ReverseNodes []KmerNode `json:"reverse,omitempty"`
 }
-
-var schema = `
-	sequence: string @index(term) .
-`
 
 // NewGraph is the main setup for backends.
 func NewGraph() *Graph {
@@ -37,7 +33,7 @@ func NewGraph() *Graph {
 		K: 11,
 	}
 	// Create a connection to Dgraph.
-	g.dg, _ = setupDgraph("localhost", "9080", schema)
+	g.dg, _ = setupDgraph("localhost", "9080")
 	log.Println("Dgraph connected OK.")
 	// Create a connection to Badger.
 	g.bd = setupBadger()
@@ -56,7 +52,7 @@ func (g *Graph) DropAll(contextMain context.Context) (bool, error) {
 	}
 
 	// Ensure schema is still setup after dropping.
-	setupSchema(g.dg, schema)
+	setupSchema(g.dg)
 
 	return true, nil
 }
@@ -177,7 +173,7 @@ func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, err
 	defer cancel()
 
 	node := KmerNode{
-		Sequence: seq,
+		sequence: seq,
 	}
 
 	nb, err := json.Marshal(node)
