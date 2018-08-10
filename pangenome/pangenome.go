@@ -196,7 +196,7 @@ func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, err
 	return uid, err
 }
 
-func (g *Graph) GetNode(seq string, contextMain context.Context) (uint64, error) {
+func (g *Graph) GetNode(seq string, contextMain context.Context) (uint64, bool) {
 	ctx, cancel := context.WithCancel(contextMain)
 	defer cancel()
 
@@ -224,13 +224,13 @@ func (g *Graph) GetNode(seq string, contextMain context.Context) (uint64, error)
 		log.Fatal(err)
 	}
 	if len(decode.All) == 0 {
-		return 0, nil
+		return 0, false
 	}
 	i, err := strconv.ParseUint(decode.All[0].Uid, 16, 64)
 	if err != nil {
-		return 0, nil
+		return 0, false
 	}
-	return i, nil
+	return i, true
 }
 
 func (g *Graph) CreateEdge(src uint64, dst uint64, contextMain context.Context) (*api.Assigned, error) {

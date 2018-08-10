@@ -135,7 +135,7 @@ func ExampleGetNode() {
 	log.Println(uidRetrieved)
 	fmt.Println(uid == uidRetrieved)
 	// Output:
-	// <nil>
+	// true
 	// true
 }
 
