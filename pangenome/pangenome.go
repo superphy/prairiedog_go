@@ -220,6 +220,7 @@ func (g *Graph) GetNode(seq string, contextMain context.Context) (uint64, bool) 
 			Uid string
 		}
 	}
+	log.Println(resp.GetJson())
 	if err := json.Unmarshal(resp.GetJson(), &decode); err != nil {
 		log.Fatal(err)
 	}
