@@ -17,6 +17,13 @@ var Schema = `
 	Sequence: string @index(term) .
 `
 
+type KmerNode struct {
+	UID          uint64     `json:"uid,omitempty"`
+	Sequence     string     `json:"sequence,omitempty"`
+	ForwardNodes []KmerNode `json:"forward,omitempty"`
+	ReverseNodes []KmerNode `json:"reverse,omitempty"`
+}
+
 func setupDgraph(address string, port string) (*dgo.Dgraph, error) {
 	// Dial a gRPC connection. The address to dial to can be configured when
 	// setting up the dgraph cluster.

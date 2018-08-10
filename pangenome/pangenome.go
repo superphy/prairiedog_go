@@ -19,13 +19,6 @@ type Graph struct {
 	K  int
 }
 
-type KmerNode struct {
-	UID          uint64     `json:"uid,omitempty"`
-	Sequence     string     `json:"sequence,omitempty"`
-	ForwardNodes []KmerNode `json:"forward,omitempty"`
-	ReverseNodes []KmerNode `json:"reverse,omitempty"`
-}
-
 // NewGraph is the main setup for backends.
 func NewGraph() *Graph {
 	log.Println("Starting NewGraph().")
@@ -212,7 +205,7 @@ func (g *Graph) GetNode(seq string, contextMain context.Context) (uint64, error)
 
 	q := fmt.Sprintf(`
 		{
-			all(func: anyofterms(Sequence, %s)) {
+			q(func: eq(Sequence, %s)) {
 				uid
 			}
 		}
