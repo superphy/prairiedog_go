@@ -14,7 +14,7 @@ import (
 )
 
 var Schema = `
-	Sequence: string @index(term) .
+	Sequence: string @index(term) @upsert .
 `
 
 type KmerNode struct {
