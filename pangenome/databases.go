@@ -14,7 +14,7 @@ import (
 )
 
 var Schema = `
-	sequence: string @index(term) .
+	Sequence: string @index(term) .
 `
 
 func setupDgraph(address string, port string) (*dgo.Dgraph, error) {

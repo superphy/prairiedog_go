@@ -21,7 +21,7 @@ type Graph struct {
 
 type KmerNode struct {
 	UID          uint64     `json:"uid,omitempty"`
-	sequence     string     `json:"sequence,omitempty"`
+	Sequence     string     `json:"sequence,omitempty"`
 	ForwardNodes []KmerNode `json:"forward,omitempty"`
 	ReverseNodes []KmerNode `json:"reverse,omitempty"`
 }
@@ -173,7 +173,7 @@ func (g *Graph) CreateNode(seq string, contextMain context.Context) (uint64, err
 	defer cancel()
 
 	node := KmerNode{
-		sequence: seq,
+		Sequence: seq,
 	}
 
 	nb, err := json.Marshal(node)

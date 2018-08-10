@@ -14,9 +14,6 @@ func ExampleBadger() {
 }
 
 func ExampleDgraph() {
-	var schema = `
-		sequence: string @index(term) .
-	`
 	_, err := setupDgraph("localhost", "9080")
 	fmt.Println(err)
 	// Output:
