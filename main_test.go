@@ -130,11 +130,13 @@ func ExampleGetNode() {
 	_, seq := km.Next()
 	uid, err := g.CreateNode(seq, contextMain)
 	fmt.Println(err)
-	uidRetrieved, _ := g.GetNode(seq, contextMain)
+	uidRetrieved, b := g.GetNode(seq, contextMain)
 	log.Println(uid)
 	log.Println(uidRetrieved)
+	fmt.Println(b)
 	fmt.Println(uid == uidRetrieved)
 	// Output:
+	// <nil>
 	// true
 	// true
 }
