@@ -92,13 +92,18 @@ func (g *Graph) SetKVSliceUint64(key string, value []uint64) (bool, error) {
 
 // GetKVInt get the key: value pair in Badger.
 func (g *Graph) GetKVInt(key string) (int, error) {
-	var val []byte
+	var valCopy []byte
 	err := g.bd.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(key))
 		if err != nil {
 			return err
 		}
-		val, err = item.Value()
+		err = item.Value(func(val []byte) error {
+			// This func with val would only be called if item.Value encounters no error.
+			// Copying or parsing val is valid.
+			valCopy = append([]byte{}, val...)
+			return nil
+		})
 		if err != nil {
 			return err
 		}
@@ -107,7 +112,7 @@ func (g *Graph) GetKVInt(key string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	s := string(val[:])
+	s := string(valCopy[:])
 	evaluated, err := strconv.Atoi(s)
 	if err != nil {
 		return -1, err
@@ -117,13 +122,18 @@ func (g *Graph) GetKVInt(key string) (int, error) {
 
 // GetKVStr gets the key: value pair in Badger.
 func (g *Graph) GetKVStr(key string) (string, error) {
-	var val []byte
+	var valCopy []byte
 	err := g.bd.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(key))
 		if err != nil {
 			return err
 		}
-		val, err = item.Value()
+		err = item.Value(func(val []byte) error {
+			// This func with val would only be called if item.Value encounters no error.
+			// Copying or parsing val is valid.
+			valCopy = append([]byte{}, val...)
+			return nil
+		})
 		if err != nil {
 			return err
 		}
@@ -132,19 +142,24 @@ func (g *Graph) GetKVStr(key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	s := string(val[:])
+	s := string(valCopy[:])
 	return s, nil
 }
 
 // GetKVSliceUint64 gets the key: value pair in Badger.
 func (g *Graph) GetKVSliceUint64(key string) ([]uint64, error) {
-	var val []byte
+	var valCopy []byte
 	err := g.bd.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(key))
 		if err != nil {
 			return err
 		}
-		val, err = item.Value()
+		err = item.Value(func(val []byte) error {
+			// This func with val would only be called if item.Value encounters no error.
+			// Copying or parsing val is valid.
+			valCopy = append([]byte{}, val...)
+			return nil
+		})
 		if err != nil {
 			return err
 		}
@@ -154,7 +169,7 @@ func (g *Graph) GetKVSliceUint64(key string) ([]uint64, error) {
 		return nil, err
 	}
 	var sl []uint64
-	err = json.Unmarshal(val, &sl)
+	err = json.Unmarshal(valCopy, &sl)
 	if err != nil {
 		return nil, err
 	}
