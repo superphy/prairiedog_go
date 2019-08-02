@@ -1,3 +1,5 @@
+Active development has moved to https://github.com/superphy/prairiedog
+
 # prairiedog
 
 ![prairiedog mascot](.daisy.png)
